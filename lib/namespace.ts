@@ -694,4 +694,23 @@ export class Namespace<
       this.adapter
     ).disconnectSockets(close);
   }
+
+  /**
+   * Cleans up the namespace if necessary (if the server option cleanupEmptyNamespace is true and there are no sockets connected to the namespace).
+   *
+   * @param nsp - this namespace to cleanup
+   *
+   */
+  cleanupNamespace() {
+    if (!this.server.cleanupEmptyNamespaces) {
+      return;
+    }
+
+    if (this.sockets.size !== 0) {
+      return;
+    }
+
+    this.adapter.close();
+    this.server._nsps.delete(this.name);
+  }
 }
